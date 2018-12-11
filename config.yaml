@@ -1,0 +1,18 @@
+
+#### reference  path
+transcriptome: /n/regal/informatics_public/reference_genome_by_tommy/cellranger_ref/mm10-2.1.0_premrna
+
+#### downloading token, this will be associated with your 10X account 
+token: 443300c06b244d33a65948513feae919
+
+#### cellranger specific settings
+expect_cells: 3000
+## additional cellranger count parameters.
+cellranger_count_args: "--nosecondary --chemistry=SC3Pv2"
+
+CLUSTER_JSON: './cluster.json'
+SAMPLES_JSON: './samples.json'
+
+
+
+
