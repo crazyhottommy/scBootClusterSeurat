@@ -1,17 +1,41 @@
 
-#### reference  path
-transcriptome: /n/regal/informatics_public/reference_genome_by_tommy/cellranger_ref/mm10-2.1.0_premrna
+## set up parameters
+######################################################################
 
-#### downloading token, this will be associated with your 10X account 
-token: 443300c06b244d33a65948513feae919
+############     Bootstrap related parameters        #################
 
-#### cellranger specific settings
-expect_cells: 3000
-## additional cellranger count parameters.
-cellranger_count_args: "--nosecondary --chemistry=SC3Pv2"
+######################################################################
+bootstrap_cluster: True
+subsample_rate: 0.8
+num_of_bootstrap: 20
+
+bootstrap_k: False
+bootstrap_ks: "8 10 12 14 16"
+
+bootstrap_resolution: False
+bootstrap_resolutions: "0.6 0.8 1 1.2 1.4"
+
+## if set to True, all the combinations of k and resolution will be 
+## bootstrapped 
+bootstrap_k_and_resolution: False
+
+######################################################################
+
+############     scclusteval package related parameters   ############
+
+######################################################################
+
+## those are parameters for functions from  Seurat package 
+## preprocessSubsetData is a wrapper.
+PreprocessSubsetData_pars: "x.low.cutoff = 0.05, x.high.cutoff = 10, y.cutoff = 0.5, \
+num.pc = 20, do.par =TRUE, num.cores = 2, score.thresh = 1e-5, n.start = 100, \
+nn.eps = 0, resolution = 0.8, k.param = 30"
+
+
+
 
 CLUSTER_JSON: './cluster.json'
-SAMPLES_JSON: './samples.json'
+
 
 
 

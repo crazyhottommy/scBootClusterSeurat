@@ -4,14 +4,13 @@ shell.suffix("; exitstat=$?; echo END at $(date); echo exit status was $exitstat
 configfile: "config.yaml"
 
 CLUSTER = json.load(open(config['CLUSTER_JSON']))
-FILES = json.load(open(config['SAMPLES_JSON']))
 
-NUM_OF_BOOTSTRAP: config["num_of_bootstrap"]
-ks = config["boot_strap_ks"].split()
+NUM_OF_BOOTSTRAP = config["num_of_bootstrap"]
+ks = config["bootstrap_ks"].split()
 resolutions = config["bootstrap_resolutions"].split()
 
 BOOTSTRAP_CLUSTER = []
-BOOTSTRAP_CLUSTER = expend("bootstrap_cluster/bootstrap_cluster_{run_id}.rda", run_id = range(NUM_OF_BOOTSTRAP))
+BOOTSTRAP_CLUSTER = expand("bootstrap_cluster/bootstrap_cluster_{run_id}.rda", run_id = range(NUM_OF_BOOTSTRAP))
 
 BOOTSTRAP_K = []
 BOOTSTRAP_RESOLUTION = []
@@ -29,7 +28,7 @@ BOOTSTRAP_K_and_RESOLUTION = expand("bootstrap_k_and_resolution/bootstrap_k_{k}_
 TARGETS = []
 if config["bootstrap_cluster"]:
 	TARGETS.extend(BOOTSTRAP_CLUSTER)
-	TARGETS.extend("gather_bootstrap_cluster.rda")
+	TARGETS.append("gather_bootstrap_cluster.rda")
 if config["bootstrap_k"]:
 	TARGETS.extend(BOOTSTRAP_K)
 if config["bootstrap_resolution"]:
@@ -38,52 +37,52 @@ if config["bootstrap_k_and_resolution"]:
 	TARGETS.extend(BOOTSTRAP_K_and_RESOLUTION)
 
 
-localrules: all
+localrules: all, gather_cluster
 rule all:
     input: TARGETS
 
 
 if config["bootstrap_cluster"]:
 	rule bootstrap_cluster:
-		input: "seurat_obj.rda" 
+		input: "seurat_obj.rds" 
 		output: "bootstrap_cluster/bootstrap_cluster_{run_id}.rda"
 		log: "00log/bootstrap_cluster_{run_id}.log"
 		threads: CLUSTER["bootstrap_cluster"]["n"]
 		params: jobname = "bootstrap_cluster_{run_id}",
 				rate = config["subsample_rate"],
-				PreprocessSubsetData_pars = config.get(""PreprocessSubsetData_pars"", "")
+				PreprocessSubsetData_pars = config.get("PreprocessSubsetData_pars", "")
 		message: "bootstrapping cluster for round {wildcards.run_id} using {threads} threads"
-		scripts: "scripts/bootstrap_cluster.R"
+		script: "scripts/bootstrap_cluster.R"
 
 if config["bootstrap_k"]:
 	rule bootstrap_k:
-		input: "seurat_obj.rda"
+		input: "seurat_obj.rds"
 		output: "bootstrap_k/bootstrap_k_{k}.rda"
 		log: "00log/bootstrap_k_{k}.log"
 		threads: CLUSTER["bootstrap_cluster"]["n"]
 		params: jobname = "bootstrap_k_{k}"
 		message: "bootstrapping k for round {wildcards.k} using {threads} threads"
-		scripts: "scripts/bootstrap_k.R"
+		script: "scripts/bootstrap_k.R"
 
 if config["bootstrap_resolution"]:
 	rule bootstrap_resolution:
-		input: "seurat_obj.rda"
+		input: "seurat_obj.rds"
 		output: "bootstrap_resolution/bootstrap_resolution_{resolution}.rda"
 		log: "00log/bootstrap_resolution_{resolution}.log"
 		threads: CLUSTER["bootstrap_cluster"]["n"]
 		params: jobname = "bootstrap_resolution_{resolution}"
 		message: "bootstrapping resolution for round {wildcards.resolution} using {threads} threads"
-		scripts: "scripts/bootstrap_resolution.R"
+		script: "scripts/bootstrap_resolution.R"
 
 if config["bootstrap_k_and_resolution"]:
 	rule bootstrap_resolution:
-		input: "seurat_obj.rda"
+		input: "seurat_obj.rds"
 		output: "bootstrap_k_and_resolution/bootstrap_k_{k}_resolution_{resolution}.rda"
 		log: "00log/bootstrap_k_{k}_resolution_{resolution}.log"
 		threads: CLUSTER["bootstrap_cluster"]["n"]
 		params: jobname = "bootstrap_k_{k}_resolution_{resolution}"
 		message: "bootstrapping k {wildcards.k} resolution {wildcards.resolution} using {threads} threads"
-		scripts: "scripts/bootstrap_k_and_resolution.R"
+		script: "scripts/bootstrap_k_and_resolution.R"
 
 
 if config["bootstrap_cluster"]:
@@ -93,6 +92,6 @@ if config["bootstrap_cluster"]:
 		log: "00log/gather_bootstrap_cluster.log"
 		threads: 1
 		message: "gathering idents for bootstrap cluster"
-		scripts: "scripts/gather_bootstrap.R"
+		script: "scripts/gather_bootstrap.R"
 
 
