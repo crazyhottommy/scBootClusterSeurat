@@ -1,6 +1,6 @@
 library(scclusteval)
 
-seurat_obj<- snakemake@input[[1]]
+seurat_obj<- readRDS(snakemake@input[[1]])
 PreprocessSubsetData_pars<- snakemake@params[["PreprocessSubsetData_pars"]]
 subset_seurat_obj<- RandomSubsetData(seurat_obj, rate = snakemake@params[["rate"]])
 subset_seurat_obj<- PreprocessSubsetData(subset_seurat_obj, PreprocessSubsetData_pars)
