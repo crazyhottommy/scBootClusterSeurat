@@ -27,9 +27,7 @@ bootstrap_k_and_resolution: False
 
 ## those are parameters for functions from  Seurat package 
 ## preprocessSubsetData is a wrapper.
-PreprocessSubsetData_pars: "x.low.cutoff = 0.05, x.high.cutoff = 10, y.cutoff = 0.5, \
-num.pc = 20, do.par =TRUE, num.cores = 2, score.thresh = 1e-5, n.start = 100, \
-nn.eps = 0, resolution = 0.8, k.param = 30"
+PreprocessSubsetData_pars: "x.low.cutoff = 0.05, x.high.cutoff = 10, y.cutoff = 0.5, num.pc = 20, do.par =TRUE, num.cores = 2, score.thresh = 1e-5, n.start = 100, nn.eps = 0, resolution = 0.8, k.param = 30"
 
 
 
