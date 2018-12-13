@@ -45,7 +45,7 @@ if config["bootstrap_k"]:
 		input: "seurat_obj.rds"
 		output: "bootstrap_k_preprocess/bootstrap_k_{k}.rds"
 		log: "00log/bootstrap_k_{k}.log"
-		threads: CLUSTER["bootstrap_cluster"]["n"]
+		threads: CLUSTER["bootstrap_k_preprocess"]["n"]
 		params: jobname = "bootstrap_k_{k}",
 				PreprocessSubsetData_pars = config.get("PreprocessSubsetData_bootstrap_k_pars", "")
 		message: "preprocessing original seurat object using k of {wildcards.k} with {threads} threads"
@@ -55,7 +55,7 @@ if config["bootstrap_k"]:
 		input: "bootstrap_k_preprocess/bootstrap_k_{k}.rds"
 		output: "bootstrap_k/bootstrap_k_{k}_round_{run_id}.rda"
 		log: "00log/bootstrap_k_{k}_round_{run_id}.log"
-		threads: CLUSTER["bootstrap_k_cluster"]["n"]
+		threads: CLUSTER["bootstrap_k"]["n"]
 		params: jobname = "bootstrap_k_{k}_round_{run_id}",
 				rate = config["subsample_rate"],
 				PreprocessSubsetData_pars = config.get("PreprocessSubsetData_bootstrap_k_pars", "")
@@ -68,7 +68,7 @@ if config["bootstrap_resolution"]:
 		input: "seurat_obj.rds"
 		output: "bootstrap_resolution_preprocess/bootstrap_resolution_{resolution}.rds"
 		log: "00log/bootstrap_resolution_{resolution}.log"
-		threads: CLUSTER["bootstrap_cluster"]["n"]
+		threads: CLUSTER["bootstrap_resolution_preprocess"]["n"]
 		params: jobname = "bootstrap_resolution_{resolution}",
 				PreprocessSubsetData_pars = config.get("PreprocessSubsetData_bootstrap_resolution_pars", "")
 		message: "preprocessing original seurat object using resolution of {wildcards.resolution} with {threads} threads"
@@ -92,7 +92,7 @@ if config["bootstrap_k_and_resolution"]:
 		input: "seurat_obj.rds"
 		output: "bootstrap_k_and_resolution_preprocess/bootstrap_k_{k}_resolution_{resolution}.rds"
 		log: "00log/bootstrap_k_{k}_resolution_{resolution}.log"
-		threads: CLUSTER["bootstrap_cluster"]["n"]
+		threads: CLUSTER["bootstrap_k_and_resolution_preprocess"]["n"]
 		params: jobname = "bootstrap_k_{k}_resolution_{resolution}",
 				PreprocessSubsetData_pars = config.get("PreprocessSubsetData_bootstrap_k_and_resolution_pars", "")
 		message: "preprocessing original seurat object using k {wildcards.k} resolution {wildcards.resolution} with {threads} threads"
