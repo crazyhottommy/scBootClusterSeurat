@@ -1,11 +1,19 @@
-rdas<- snakemake@input[["rdas"]]
+library(tidyverse)
+rdss<- snakemake@input[["rds"]]
 
-get_ident<- function(rda){
-	load(rda)
+get_ident<- function(rds){
+	res<- readRDS(rds)
 	ident<- res$ident
-	return(ident)
+	k<- res$k
+	return(list(k = k ,ident = ident))
 }
 
-idents<- lapply(rdas, get_ident)
+res<- lapply(rdss, get_ident)
 
-save(idents, file = "gather_bootstrap_k.rda")
+idents<- purrr::map(res, "ident")
+ks<- purrr::map_chr(res, "k")
+
+## put the idents of the same k into a list
+idents<- split(idents, ks)
+
+saveRDS(idents, file = "gather_bootstrap_k.rds")

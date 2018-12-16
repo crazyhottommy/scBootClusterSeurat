@@ -9,30 +9,25 @@ NUM_OF_BOOTSTRAP = config["num_of_bootstrap"]
 ks = config["bootstrap_ks"].strip().split()
 resolutions = config["bootstrap_resolutions"].strip().split()
 
+BOOTSTRAP_K = expand("bootstrap_k/bootstrap_k_{k}_round_{run_id}.rds", k = ks, run_id = range(NUM_OF_BOOTSTRAP))
 
-BOOTSTRAP_K = []
-BOOTSTRAP_RESOLUTION = []
-BOOTSTRAP_K_and_RESOLUTION = []
-
-BOOTSTRAP_K = expand("bootstrap_k/bootstrap_k_{k}_round_{run_id}.rda", k = ks, run_id = range(NUM_OF_BOOTSTRAP))
-
-BOOTSTRAP_RESOLUTION = expand("bootstrap_resolution/bootstrap_resolution_{resolution}_round_{run_id}.rda", \
+BOOTSTRAP_RESOLUTION = expand("bootstrap_resolution/bootstrap_resolution_{resolution}_round_{run_id}.rds", \
 		resolution = resolutions, run_id = range(NUM_OF_BOOTSTRAP))
 
-BOOTSTRAP_K_and_RESOLUTION = expand("bootstrap_k_and_resolution/bootstrap_k_{k}_resolution_{resolution}_round_{run_id}.rda", \
+BOOTSTRAP_K_and_RESOLUTION = expand("bootstrap_k_and_resolution/bootstrap_k_{k}_resolution_{resolution}_round_{run_id}.rds", \
 	k = ks, resolution = resolutions, run_id = range(NUM_OF_BOOTSTRAP))
 
 
 TARGETS = []
 if config["bootstrap_k"]:
 	TARGETS.extend(BOOTSTRAP_K)
-	TARGETS.append("gather_bootstrap_k.rda")
+	TARGETS.append("gather_bootstrap_k.rds")
 if config["bootstrap_resolution"]:
 	TARGETS.extend(BOOTSTRAP_RESOLUTION)
-	TARGETS.append("gather_bootstrap_resolution.rda")
+	TARGETS.append("gather_bootstrap_resolution.rds")
 if config["bootstrap_k_and_resolution"]:
 	TARGETS.extend(BOOTSTRAP_K_and_RESOLUTION)
-	TARGETS.append("gather_bootstrap_k_and_resolution.rda")
+	TARGETS.append("gather_bootstrap_k_and_resolution.rds")
 
 
 localrules: all, gather_bootstrap_k, gather_bootstrap_resolution, gather_bootstrap_k_and_resolution
@@ -53,7 +48,7 @@ if config["bootstrap_k"]:
 	
 	rule bootstrap_k:
 		input: "bootstrap_k_preprocess/bootstrap_k_{k}.rds"
-		output: "bootstrap_k/bootstrap_k_{k}_round_{run_id}.rda"
+		output: "bootstrap_k/bootstrap_k_{k}_round_{run_id}.rds"
 		log: "00log/bootstrap_k_{k}_round_{run_id}.log"
 		threads: CLUSTER["bootstrap_k"]["n"]
 		params: jobname = "bootstrap_k_{k}_round_{run_id}",
@@ -76,7 +71,7 @@ if config["bootstrap_resolution"]:
 
 	rule bootstrap_resolution:
 		input: "bootstrap_resolution_preprocess/bootstrap_resolution_{resolution}.rds"
-		output: "bootstrap_resolution/bootstrap_resolution_{resolution}_round_{run_id}.rda"
+		output: "bootstrap_resolution/bootstrap_resolution_{resolution}_round_{run_id}.rds"
 		log: "00log/bootstrap_resolution_{resolution}_round_{run_id}.log"
 		threads: CLUSTER["bootstrap_resolution"]["n"]
 		params: jobname = "bootstrap_resolution_{resolution}_round_{run_id}",
@@ -100,7 +95,7 @@ if config["bootstrap_k_and_resolution"]:
 
 	rule bootstrap_k_and_resolution:
 		input: "bootstrap_resolution_preprocess/bootstrap_resolution_{resolution}.rds"
-		output: "bootstrap_k_and_resolution/bootstrap_k_{k}_resolution_{resolution}_round_{run_id}.rda"
+		output: "bootstrap_k_and_resolution/bootstrap_k_{k}_resolution_{resolution}_round_{run_id}.rds"
 		log: "00log/bootstrap_k_{k}_resolution_{resolution}_round_{run_id}.log"
 		threads: CLUSTER["bootstrap_k_and_resolution"]["n"]
 		params: jobname = "bootstrap_k_{k}_resolution_{resolution}_round_{run_id}",
@@ -111,8 +106,8 @@ if config["bootstrap_k_and_resolution"]:
 
 if config["bootstrap_k"]:
 	rule gather_bootstrap_k:
-		input: rdas = BOOTSTRAP_K
-		output: "gather_bootstrap_k.rda"
+		input: rds = BOOTSTRAP_K
+		output: "gather_bootstrap_k.rds"
 		log: "00log/gather_bootstrap_k.log"
 		threads: 1
 		message: "gathering idents for bootstrap k"
@@ -121,8 +116,8 @@ if config["bootstrap_k"]:
 
 if config["bootstrap_resolution"]:
 	rule gather_bootstrap_resolution:
-		input: rdas = BOOTSTRAP_RESOLUTION
-		output: "gather_bootstrap_resolution.rda"
+		input: rds = BOOTSTRAP_RESOLUTION
+		output: "gather_bootstrap_resolution.rds"
 		log: "00log/gather_bootstrap_resolution.log"
 		threads: 1
 		message: "gathering idents for bootstrap resolution"
@@ -130,8 +125,8 @@ if config["bootstrap_resolution"]:
 
 if config["bootstrap_k"]:
 	rule gather_bootstrap_k_and_resolution:
-		input: rdas = BOOTSTRAP_K_and_RESOLUTION
-		output: "gather_bootstrap_k_and_resolution.rda"
+		input: rds = BOOTSTRAP_K_and_RESOLUTION
+		output: "gather_bootstrap_k_and_resolution.rds"
 		log: "00log/gather_bootstrap_k_and_resolution.log"
 		threads: 1
 		message: "gathering idents for bootstrap k and resolution"
