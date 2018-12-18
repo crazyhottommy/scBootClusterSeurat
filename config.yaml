@@ -5,6 +5,7 @@
 ############     Bootstrap related parameters        #################
 
 ######################################################################
+input_seurat: "seurat_obj.rds"
 subsample_rate: 0.8
 num_of_bootstrap: 20
 

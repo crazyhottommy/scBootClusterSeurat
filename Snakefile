@@ -8,7 +8,7 @@ CLUSTER = json.load(open(config['CLUSTER_JSON']))
 NUM_OF_BOOTSTRAP = config["num_of_bootstrap"]
 ks = config["bootstrap_ks"].strip().split()
 resolutions = config["bootstrap_resolutions"].strip().split()
-
+INPUT_SEURAT = config["input_seurat"]
 BOOTSTRAP_K = expand("bootstrap_k/bootstrap_k_{k}_round_{run_id}.rds", k = ks, run_id = range(NUM_OF_BOOTSTRAP))
 
 BOOTSTRAP_RESOLUTION = expand("bootstrap_resolution/bootstrap_resolution_{resolution}_round_{run_id}.rds", \
@@ -37,7 +37,7 @@ rule all:
 
 if config["bootstrap_k"]:
 	rule bootstrap_k_preprocess:
-		input: "seurat_obj.rds"
+		input: INPUT_SEURAT
 		output: "bootstrap_k_preprocess/bootstrap_k_{k}.rds"
 		log: "00log/bootstrap_k_{k}.log"
 		threads: CLUSTER["bootstrap_k_preprocess"]["n"]
@@ -60,7 +60,7 @@ if config["bootstrap_k"]:
 
 if config["bootstrap_resolution"]:
 	rule bootstrap_resolution_preprocess:
-		input: "seurat_obj.rds"
+		input: INPUT_SEURAT
 		output: "bootstrap_resolution_preprocess/bootstrap_resolution_{resolution}.rds"
 		log: "00log/bootstrap_resolution_{resolution}.log"
 		threads: CLUSTER["bootstrap_resolution_preprocess"]["n"]
@@ -84,7 +84,7 @@ if config["bootstrap_resolution"]:
 
 if config["bootstrap_k_and_resolution"]:
 	rule bootstrap_k_and_resolution_preprocess:
-		input: "seurat_obj.rds"
+		input: INPUT_SEURAT
 		output: "bootstrap_k_and_resolution_preprocess/bootstrap_k_{k}_resolution_{resolution}.rds"
 		log: "00log/bootstrap_k_{k}_resolution_{resolution}.log"
 		threads: CLUSTER["bootstrap_k_and_resolution_preprocess"]["n"]
