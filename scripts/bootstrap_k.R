@@ -10,10 +10,12 @@ k<- snakemake@wildcards[["k"]]
 PreprocessSubsetData_pars<- snakemake@params[["PreprocessSubsetData_pars"]]
 
 subset_seurat_obj<- RandomSubsetData(seurat_obj, rate = snakemake@params[["rate"]])
+original_ident<- subset_seurat_obj@ident
 
+## after reprocessing, the ident slot will be updated with the new cluster id
 command<- paste("PreprocessSubsetData", "(", "subset_seurat_obj,", "k=", k, ",", PreprocessSubsetData_pars, ")")
 subset_seurat_obj<- eval(parse(text=command))
 
-res<- list(ident = subset_seurat_obj@ident, k = k, pc.sig = subset_seurat_obj@meta.data$pc.sig, calc.params = subset_seurat_obj@calc.params)
+res<- list(original_ident = original_ident, ident = subset_seurat_obj@ident, k = k, pc.use = subset_seurat_obj@meta.data$pc.use, calc.params = subset_seurat_obj@calc.params)
 run_id<- snakemake@wildcards[["run_id"]]
 saveRDS(res, file = paste0("bootstrap_k/bootstrap_k_", k, "_round_", run_id, ".rds"))
