@@ -39,6 +39,7 @@ if config["bootstrap_k"]:
 	rule bootstrap_k_preprocess:
 		input: INPUT_SEURAT
 		output: "bootstrap_k_preprocess/bootstrap_k_{k}.rds"
+		singularity: "docker://crazyhottommy/seuratv2"
 		log: "00log/bootstrap_k_{k}.log"
 		threads: CLUSTER["bootstrap_k_preprocess"]["n"]
 		params: jobname = "bootstrap_k_{k}",
@@ -49,6 +50,7 @@ if config["bootstrap_k"]:
 	rule bootstrap_k:
 		input: "bootstrap_k_preprocess/bootstrap_k_{k}.rds"
 		output: "bootstrap_k/bootstrap_k_{k}_round_{run_id}.rds"
+		singularity: "docker://crazyhottommy/seuratv2"
 		log: "00log/bootstrap_k_{k}_round_{run_id}.log"
 		threads: CLUSTER["bootstrap_k"]["n"]
 		params: jobname = "bootstrap_k_{k}_round_{run_id}",
@@ -62,6 +64,7 @@ if config["bootstrap_resolution"]:
 	rule bootstrap_resolution_preprocess:
 		input: INPUT_SEURAT
 		output: "bootstrap_resolution_preprocess/bootstrap_resolution_{resolution}.rds"
+		singularity: "docker://crazyhottommy/seuratv2"
 		log: "00log/bootstrap_resolution_{resolution}.log"
 		threads: CLUSTER["bootstrap_resolution_preprocess"]["n"]
 		params: jobname = "bootstrap_resolution_{resolution}",
@@ -72,6 +75,7 @@ if config["bootstrap_resolution"]:
 	rule bootstrap_resolution:
 		input: "bootstrap_resolution_preprocess/bootstrap_resolution_{resolution}.rds"
 		output: "bootstrap_resolution/bootstrap_resolution_{resolution}_round_{run_id}.rds"
+		singularity: "docker://crazyhottommy/seuratv2"
 		log: "00log/bootstrap_resolution_{resolution}_round_{run_id}.log"
 		threads: CLUSTER["bootstrap_resolution"]["n"]
 		params: jobname = "bootstrap_resolution_{resolution}_round_{run_id}",
@@ -86,6 +90,7 @@ if config["bootstrap_k_and_resolution"]:
 	rule bootstrap_k_and_resolution_preprocess:
 		input: INPUT_SEURAT
 		output: "bootstrap_k_and_resolution_preprocess/bootstrap_k_{k}_resolution_{resolution}.rds"
+		singularity: "docker://crazyhottommy/seuratv2"
 		log: "00log/bootstrap_k_{k}_resolution_{resolution}.log"
 		threads: CLUSTER["bootstrap_k_and_resolution_preprocess"]["n"]
 		params: jobname = "bootstrap_k_{k}_resolution_{resolution}",
@@ -96,6 +101,7 @@ if config["bootstrap_k_and_resolution"]:
 	rule bootstrap_k_and_resolution:
 		input: "bootstrap_resolution_preprocess/bootstrap_resolution_{resolution}.rds"
 		output: "bootstrap_k_and_resolution/bootstrap_k_{k}_resolution_{resolution}_round_{run_id}.rds"
+		singularity: "docker://crazyhottommy/seuratv2"
 		log: "00log/bootstrap_k_{k}_resolution_{resolution}_round_{run_id}.log"
 		threads: CLUSTER["bootstrap_k_and_resolution"]["n"]
 		params: jobname = "bootstrap_k_{k}_resolution_{resolution}_round_{run_id}",
@@ -108,6 +114,7 @@ if config["bootstrap_k"]:
 	rule gather_bootstrap_k:
 		input: rds = BOOTSTRAP_K
 		output: "gather_bootstrap_k.rds"
+		singularity: "docker://crazyhottommy/seuratv2"
 		log: "00log/gather_bootstrap_k.log"
 		threads: 1
 		message: "gathering idents for bootstrap k"
@@ -118,6 +125,7 @@ if config["bootstrap_resolution"]:
 	rule gather_bootstrap_resolution:
 		input: rds = BOOTSTRAP_RESOLUTION
 		output: "gather_bootstrap_resolution.rds"
+		singularity: "docker://crazyhottommy/seuratv2"
 		log: "00log/gather_bootstrap_resolution.log"
 		threads: 1
 		message: "gathering idents for bootstrap resolution"
@@ -127,6 +135,7 @@ if config["bootstrap_k"]:
 	rule gather_bootstrap_k_and_resolution:
 		input: rds = BOOTSTRAP_K_and_RESOLUTION
 		output: "gather_bootstrap_k_and_resolution.rds"
+		singularity: "docker://crazyhottommy/seuratv2"
 		log: "00log/gather_bootstrap_k_and_resolution.log"
 		threads: 1
 		message: "gathering idents for bootstrap k and resolution"
