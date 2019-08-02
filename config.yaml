@@ -29,14 +29,15 @@ bootstrap_k_and_resolution: False
 ## preprocessSubsetData is a wrapper.
 
 ## you should leave k out, k will be used from bootstrap_ks specified above
-PreprocessSubsetData_bootstrap_k_pars: "x.low.cutoff = 0.05, x.high.cutoff = 10, y.cutoff = 0.5, num.pc = 20, do.par =TRUE, num.cores = 8, score.thresh = 1e-5, n.start = 100, nn.eps = 0, resolution = 0.8"
+## library(scclusteval)
+## ?PreprocessSubsetData   you can also set pc.use = 20 to skip the JackStraw which was used to determine the best PCs to use
+PreprocessSubsetData_bootstrap_k_pars: "variable.features.n = 3000, num.pc = 20, workers = 8, score.thresh = 1e-5, n.start = 100, nn.eps = 0, resolution = 0.8"
 
 ## you should leave resolution out. resolution will be used from bootstrap_resolutions specified above
-PreprocessSubsetData_bootstrap_resolution_pars: "x.low.cutoff = 0.05, x.high.cutoff = 10, y.cutoff = 0.5, num.pc = 20, do.par =TRUE, num.cores = 8, score.thresh = 1e-5, n.start = 100, nn.eps = 0, k.param = 30"
+PreprocessSubsetData_bootstrap_resolution_pars: "variable.features.n = 3000, num.pc = 20, workers = 8, score.thresh = 1e-5, n.start = 100, nn.eps = 0, k.param = 30"
 
-PreprocessSubsetData_bootstrap_k_and_resolution_pars: "x.low.cutoff = 0.05, x.high.cutoff = 10, y.cutoff = 0.5, num.pc = 20, do.par =TRUE, num.cores = 8, score.thresh = 1e-5, n.start = 100, nn.eps = 0"
-
-
+## you should leave resolution and k.param out.
+PreprocessSubsetData_bootstrap_k_and_resolution_pars: "variable.features.n = 3000, num.pc = 20, workers = 8, score.thresh = 1e-5, n.start = 100, nn.eps = 0"
 
 
 CLUSTER_JSON: './cluster.json'
