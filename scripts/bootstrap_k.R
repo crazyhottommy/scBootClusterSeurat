@@ -18,7 +18,7 @@ subset_seurat_obj<- eval(parse(text=command))
 
 res<- list(original_ident = original_ident, ident = subset_seurat_obj@ident, k = k, pc.use = subset_seurat_obj@meta.data$pc.use, calc.params = subset_seurat_obj@calc.params)
 run_id<- snakemake@wildcards[["run_id"]]
-<<<<<<< HEAD
+
 outfile<- paste0("bootstrap_k/bootstrap_k_", k, "_round_", run_id, ".rds")
 saveRDS(res, file = outfile)
 
