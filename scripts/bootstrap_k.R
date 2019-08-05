@@ -10,7 +10,7 @@ k<- snakemake@wildcards[["k"]]
 PreprocessSubsetData_pars<- snakemake@params[["PreprocessSubsetData_pars"]]
 
 subset_seurat_obj<- RandomSubsetData(seurat_obj, rate = snakemake@params[["rate"]])
-original_ident<- subset_seurat_obj@ident
+original_ident<- Idents(subset_seurat_obj)
 
 ## after reprocessing, the ident slot will be updated with the new cluster id
 command<- paste("PreprocessSubsetData", "(", "subset_seurat_obj,", "k.param=", k, ",", PreprocessSubsetData_pars, ")")
