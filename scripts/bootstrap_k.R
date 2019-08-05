@@ -16,7 +16,7 @@ original_ident<- Idents(subset_seurat_obj)
 command<- paste("PreprocessSubsetData", "(", "subset_seurat_obj,", "k.param=", k, ",", PreprocessSubsetData_pars, ")")
 subset_seurat_obj<- eval(parse(text=command))
 
-res<- list(original_ident = original_ident, ident = Idents(subset_seurat_obj), k = k, pc.use = subset_seurat_obj@meta.data$pc.use, calc.params = subset_seurat_obj@calc.params)
+res<- list(original_ident = original_ident, ident = Idents(subset_seurat_obj), k = k, pc.use = subset_seurat_obj@meta.data$pc.use)
 run_id<- snakemake@wildcards[["run_id"]]
 
 outfile<- paste0("bootstrap_k/bootstrap_k_", k, "_round_", run_id, ".rds")
